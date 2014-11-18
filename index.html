@@ -11,28 +11,28 @@
 
 <script>
     var firstExample = new Add(
-            new Add(new Number(10), new Number(1)),
-            new Number(2));
+            new Add(number(10), number(1)),
+            number(2));
     new Machine(firstExample).run();
 
     var secondExample = new Add(
-            new Number(1),
-            new Add(new Number(2), new Number(3)));
+            number(1),
+            new Add(number(2), number(3)));
     new Machine(secondExample).run();
 
     var thirdExample = new Multiply(
-            new Add(new Number(1), new Number(2)),
-            new Add(new Number(2), new Number(3)));
+            new Add(number(1), number(2)),
+            new Add(number(2), number(3)));
     new Machine(thirdExample).run();
 
-    var fourthExample = new Bool(true);
+    var fourthExample = bool(true);
     new Machine(fourthExample).run();
 
-    var biggerExample = new Bigger(new Variable("fred"), new Number(5));
-    new Machine(biggerExample,{fred:new Number(54)}).run();
+    var biggerExample = new Bigger(new Variable("fred"), number(5));
+    new Machine(biggerExample,{fred:number(54)}).run();
 
     var variable = new Variable("bob");
-    new Machine(variable, {bob: new Number(5)}).run();
+    new Machine(variable, {bob: number(5)}).run();
 
 </script>
 

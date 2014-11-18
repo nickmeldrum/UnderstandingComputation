@@ -1,18 +1,47 @@
-function Number(value) {
-    this.value = value;
-    this.reducible = false;
-}
-Number.prototype.toString = function () {
-    return this.value.toString();
-};
-
-function Bool(value) {
-    this.value = value;
-    this.reducible = false;
+function isNumeric(obj) {
+    return !Array.isArray(obj) && (obj - parseFloat(obj) + 1) >= 0;
 }
 
-Bool.prototype.toString = function() {
-    return this.value.toString();
+function argumentNullException() {
+    return {
+        toString: function() { return "Argument was null"; }
+    };
+}
+
+function argumentNotNumberException(val) {
+    return {
+        toString: function() { return "Argument was not a number, instead it was: " + val; }
+    };
+}
+
+function number(val) {
+    if (typeof val === "undefined")
+        throw argumentNullException();
+    if (!isNumeric(val))
+        throw argumentNotNumberException(val);
+
+    return {
+        reducible: false,
+        value: val,
+        toString: function () {
+            return this.value.toString();
+        }
+    };
+}
+
+function bool(val) {
+    if (typeof val === "undefined")
+        throw argumentNullException();
+    if (typeof val !== "boolean")
+        throw argumentNotBooleanException(val);
+
+    return {
+        reducible: false,
+        value: val,
+        toString: function () {
+            return this.value.toString();
+        }
+    };
 }
 
 function Bigger(left, right) {
@@ -28,7 +57,7 @@ Bigger.prototype.toString = function(){
 Bigger.prototype.reduce = function(environment){
     if (this.left.reducible) return new Bigger(this.left.reduce(environment), this.right);
     if (this.right.reducible) return new Bigger(this.left, this.right.reduce(environment));
-    return new Bool(this.left.value > this.right.value);
+    return bool(this.left.value > this.right.value);
 };
 
 function Add(left, right) {
@@ -42,7 +71,7 @@ Add.prototype.toString = function () {
 Add.prototype.reduce = function () {
     if (this.left.reducible) return new Add(this.left.reduce(), this.right);
     if (this.right.reducible) return new Add(this.left, this.right.reduce());
-    return new Number(this.left.value + this.right.value);
+    return number(this.left.value + this.right.value);
 };
 
 function Multiply(left, right) {
@@ -56,7 +85,7 @@ Multiply.prototype.toString = function () {
 Multiply.prototype.reduce = function () {
     if (this.left.reducible) return new Multiply(this.left.reduce(), this.right);
     if (this.right.reducible) return new Multiply(this.left, this.right.reduce());
-    return new Number(this.left.value * this.right.value);
+    return number(this.left.value * this.right.value);
 };
 
 function Variable (name) {
